@@ -1,11 +1,11 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.4.18;
 
 // ----------------------------------------------------------------------------
-// '0Fucks' token contract
+// EricToken token contract
 //
-// Deployed to : 0x5A86f0cafD4ef3ba4f0344C138afcC84bd1ED222
-// Symbol      : 0FUCKS
-// Name        : 0 Fucks Token
+// Deployed to : 0xEb7208A7453dFC3C7380170A99fc5156A160Cd75
+// Symbol      : ERICOIN
+// Name        : ERICOIN
 // Total supply: 100000000
 // Decimals    : 18
 //
@@ -43,9 +43,9 @@ contract SafeMath {
 // https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20-token-standard.md
 // ----------------------------------------------------------------------------
 contract ERC20Interface {
-    function totalSupply() public constant returns (uint);
-    function balanceOf(address tokenOwner) public constant returns (uint balance);
-    function allowance(address tokenOwner, address spender) public constant returns (uint remaining);
+    function totalSupply() public view returns (uint);
+    function balanceOf(address tokenOwner) public view returns (uint balance);
+    function allowance(address tokenOwner, address spender) public view returns (uint remaining);
     function transfer(address to, uint tokens) public returns (bool success);
     function approve(address spender, uint tokens) public returns (bool success);
     function transferFrom(address from, address to, uint tokens) public returns (bool success);
@@ -74,7 +74,7 @@ contract Owned {
 
     event OwnershipTransferred(address indexed _from, address indexed _to);
 
-    constructor() public {
+    function Owned() public {
         owner = msg.sender;
     }
 
@@ -88,7 +88,7 @@ contract Owned {
     }
     function acceptOwnership() public {
         require(msg.sender == newOwner);
-        emit OwnershipTransferred(owner, newOwner);
+        OwnershipTransferred(owner, newOwner);
         owner = newOwner;
         newOwner = address(0);
     }
@@ -99,7 +99,7 @@ contract Owned {
 // ERC20 Token, with the addition of symbol, name and decimals and assisted
 // token transfers
 // ----------------------------------------------------------------------------
-contract FucksToken is ERC20Interface, Owned, SafeMath {
+contract EriCoin is ERC20Interface, Owned, SafeMath {
     string public symbol;
     string public  name;
     uint8 public decimals;
@@ -112,20 +112,20 @@ contract FucksToken is ERC20Interface, Owned, SafeMath {
     // ------------------------------------------------------------------------
     // Constructor
     // ------------------------------------------------------------------------
-    constructor() public {
-        symbol = "0FUCKS";
-        name = "0 Fucks Token";
+    function EriCoin() public {
+        symbol = "ERICOIN";
+        name = "EriCoin";
         decimals = 18;
         _totalSupply = 100000000000000000000000000;
-        balances[0x5A86f0cafD4ef3ba4f0344C138afcC84bd1ED222] = _totalSupply;
-        emit Transfer(address(0), 0x5A86f0cafD4ef3ba4f0344C138afcC84bd1ED222, _totalSupply);
+        balances[0xEb7208A7453dFC3C7380170A99fc5156A160Cd75] = _totalSupply;
+        Transfer(address(0), 0xEb7208A7453dFC3C7380170A99fc5156A160Cd75, _totalSupply);
     }
 
 
     // ------------------------------------------------------------------------
     // Total supply
     // ------------------------------------------------------------------------
-    function totalSupply() public constant returns (uint) {
+    function totalSupply() public view returns (uint) {
         return _totalSupply  - balances[address(0)];
     }
 
@@ -133,7 +133,7 @@ contract FucksToken is ERC20Interface, Owned, SafeMath {
     // ------------------------------------------------------------------------
     // Get the token balance for account tokenOwner
     // ------------------------------------------------------------------------
-    function balanceOf(address tokenOwner) public constant returns (uint balance) {
+    function balanceOf(address tokenOwner) public view returns (uint balance) {
         return balances[tokenOwner];
     }
 
@@ -146,7 +146,7 @@ contract FucksToken is ERC20Interface, Owned, SafeMath {
     function transfer(address to, uint tokens) public returns (bool success) {
         balances[msg.sender] = safeSub(balances[msg.sender], tokens);
         balances[to] = safeAdd(balances[to], tokens);
-        emit Transfer(msg.sender, to, tokens);
+        Transfer(msg.sender, to, tokens);
         return true;
     }
 
@@ -161,7 +161,7 @@ contract FucksToken is ERC20Interface, Owned, SafeMath {
     // ------------------------------------------------------------------------
     function approve(address spender, uint tokens) public returns (bool success) {
         allowed[msg.sender][spender] = tokens;
-        emit Approval(msg.sender, spender, tokens);
+        Approval(msg.sender, spender, tokens);
         return true;
     }
 
@@ -179,7 +179,7 @@ contract FucksToken is ERC20Interface, Owned, SafeMath {
         balances[from] = safeSub(balances[from], tokens);
         allowed[from][msg.sender] = safeSub(allowed[from][msg.sender], tokens);
         balances[to] = safeAdd(balances[to], tokens);
-        emit Transfer(from, to, tokens);
+        Transfer(from, to, tokens);
         return true;
     }
 
@@ -188,7 +188,7 @@ contract FucksToken is ERC20Interface, Owned, SafeMath {
     // Returns the amount of tokens approved by the owner that can be
     // transferred to the spender's account
     // ------------------------------------------------------------------------
-    function allowance(address tokenOwner, address spender) public constant returns (uint remaining) {
+    function allowance(address tokenOwner, address spender) public view returns (uint remaining) {
         return allowed[tokenOwner][spender];
     }
 
@@ -200,7 +200,7 @@ contract FucksToken is ERC20Interface, Owned, SafeMath {
     // ------------------------------------------------------------------------
     function approveAndCall(address spender, uint tokens, bytes data) public returns (bool success) {
         allowed[msg.sender][spender] = tokens;
-        emit Approval(msg.sender, spender, tokens);
+        Approval(msg.sender, spender, tokens);
         ApproveAndCallFallBack(spender).receiveApproval(msg.sender, tokens, this, data);
         return true;
     }
